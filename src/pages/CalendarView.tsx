@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getHabits, type Habit } from "@/lib/storage";
+import { getHabits, getLocalDateString, type Habit } from "@/lib/storage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +24,7 @@ const CalendarView = () => {
   };
 
   const getCompletionsForDate = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = getLocalDateString(date);
     return habits.filter(habit =>
       habit.completions.some(c => c.date === dateString)
     ).length;

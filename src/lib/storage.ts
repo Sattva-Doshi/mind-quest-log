@@ -1,5 +1,13 @@
 // Local storage utilities for the habit tracker
 
+// Helper to get date string in local timezone (YYYY-MM-DD)
+export const getLocalDateString = (date: Date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export interface Habit {
   id: string;
   name: string;
@@ -54,7 +62,7 @@ export const addHabit = (habit: Omit<Habit, 'id' | 'createdAt' | 'completions'>)
   const newHabit: Habit = {
     ...habit,
     id: Date.now().toString(),
-    createdAt: new Date().toISOString(),
+    createdAt: getLocalDateString(),
     completions: [],
   };
   habits.push(newHabit);

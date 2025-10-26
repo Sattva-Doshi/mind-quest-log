@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getHabits, toggleHabitCompletion, getHabitStreak, type Habit } from "@/lib/storage";
+import { getHabits, toggleHabitCompletion, getHabitStreak, getLocalDateString, type Habit } from "@/lib/storage";
 import { Plus, Flame, CheckCircle2, Circle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { HabitForm } from "@/components/HabitForm";
@@ -11,7 +11,7 @@ const Habits = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
-  const today = new Date().toISOString().split('T')[0];
+  const today = getLocalDateString();
 
   const loadHabits = () => {
     setHabits(getHabits());
