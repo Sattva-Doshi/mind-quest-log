@@ -1,13 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { setUser } from "@/lib/storage";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Download } from "lucide-react";
 
 const Onboarding = () => {
   const [name, setName] = useState("");
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    
+    window.addEventListener("beforeinstallprompt", handler);
+    
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === "accepted") {
+      setDeferredPrompt(null);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +43,18 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-primary/5 relative">
+      {deferredPrompt && (
+        <Button
+          onClick={handleInstall}
+          size="lg"
+          className="fixed bottom-6 right-6 shadow-lg"
+        >
+          <Download className="h-5 w-5" />
+          Install App
+        </Button>
+      )}
+      
       <div className="w-full max-w-md text-center space-y-8 animate-in fade-in duration-500">
         <div className="space-y-4">
           <div className="flex justify-center">
